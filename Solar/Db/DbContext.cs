@@ -17,5 +17,7 @@ public class DiscomDbContext : DbContext
         public DbSet<SolarApplicationTable> SolarApplications { get; set; }
         public DbSet<State> tblState { get; set; } // Add this line for tblState
 
-
+        public DbSet<Applicant> tblApplicant { get; set; }
+        public DbSet<DiscomApplicationForm> tblDiscomApplicationForm { get; set; }
+   
 }
