@@ -53,4 +53,5 @@ namespace Solar.Controllers
     {
         public string payload { get; set; }
     }
+    
 }
