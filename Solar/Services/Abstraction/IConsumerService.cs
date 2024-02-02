@@ -6,6 +6,6 @@
 
         string EncryptData(object data);
 
-        string DecryptData(byte[] encryptedBytes);
+        string DecryptData(string encryptedBytes);
     }
 }

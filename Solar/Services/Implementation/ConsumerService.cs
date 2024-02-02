@@ -18,10 +18,12 @@ namespace Solar.Services.Implementation
         {
             // Convert the base64 string to a byte array
             byte[] base64Data = Convert.FromBase64String(encryptedData);
-            var decryptedData = DecryptData(base64Data);
+            // var decryptedData = DecryptData(base64Data);
+
+            var decryptedData = DecryptAESCBC(encryptedData);
 
             // need to fetch consumerId from decrypted data
-            var consumerId = JsonConvert.DeserializeObject<ExpectedConsumerPayload>(decryptedData)?.ConsumerId;
+            var consumerId = JsonConvert.DeserializeObject<ExpectedConsumerPayload>(decryptedData)?.ConsumerNo;
 
             if (consumerId == null)
             {
@@ -35,7 +37,9 @@ namespace Solar.Services.Implementation
 
             var response = await GetDiscomApplicantData(consumerId);
 
-            var encryptedResponse = EncryptData(response);
+            var responseInString = JsonConvert.SerializeObject(response);
+
+            var encryptedResponse = EncryptAESCBC(responseInString);
 
             return encryptedResponse;
         }
@@ -95,11 +99,51 @@ namespace Solar.Services.Implementation
 
         }
 
+        public string EncryptAESCBC(string text)
+        {
+            string Key = encryptionKey;
+            string IV = encryptionKey.Substring(0, 16);
+            byte[] plaintextbytes = System.Text.ASCIIEncoding.ASCII.GetBytes(text);
+            AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
+            //   aes.Padding = PaddingMode.Zeros;
+            aes.BlockSize = 128;
+            aes.KeySize = 256;
+            aes.Key = System.Text.ASCIIEncoding.ASCII.GetBytes(Key);
+            aes.IV = System.Text.ASCIIEncoding.ASCII.GetBytes(IV);
+            aes.Padding = PaddingMode.PKCS7;
+            aes.Mode = CipherMode.CBC;
+            ICryptoTransform crypto = aes.CreateEncryptor(aes.Key, aes.IV);
+            byte[] encrypted = crypto.TransformFinalBlock(plaintextbytes, 0, plaintextbytes.Length);
+            crypto.Dispose();
+            return Convert.ToBase64String(encrypted);
+        }
+
+        public string DecryptAESCBC(string encrypted)
+        {
+            string Key = encryptionKey;
+            string IV = encryptionKey.Substring(0, 16);
+            byte[] encryptedbytes = Convert.FromBase64String(encrypted);
+            AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
+            // aes.Padding = PaddingMode.Zeros;
+            aes.BlockSize = 128;
+            aes.KeySize = 256;
+            aes.Key = System.Text.ASCIIEncoding.ASCII.GetBytes(Key);
+            aes.IV = System.Text.ASCIIEncoding.ASCII.GetBytes(IV);
+            aes.Padding = PaddingMode.PKCS7;
+            aes.Mode = CipherMode.CBC;
+            ICryptoTransform crypto = aes.CreateDecryptor(aes.Key, aes.IV);
+            byte[] secret = crypto.TransformFinalBlock(encryptedbytes, 0, encryptedbytes.Length);
+            crypto.Dispose();
+            return System.Text.ASCIIEncoding.ASCII.GetString(secret);
+        }
+
 
         public string EncryptData(object data)
         {
+            var str = JsonConvert.SerializeObject(data);
+            return EncryptAESCBC(str);
             // Serialize data to JSON
-            var jsonData = JsonConvert.SerializeObject(data);
+            /*var jsonData = JsonConvert.SerializeObject(data);
 
             byte[] encryptedBytes;
             using (Aes aesAlg = Aes.Create())
@@ -123,13 +167,17 @@ namespace Solar.Services.Implementation
                     encryptedBytes = msEncrypt.ToArray();
                 }
             }
-
             return Convert.ToBase64String(encryptedBytes);
+            */
+
+
         }
 
-        public string DecryptData(byte[] encryptedBytes)
+        public string DecryptData(string encryptedData)
         {
-            using (Aes aesAlg = Aes.Create())
+
+            return DecryptAESCBC(encryptedData);
+            /*using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
                 aesAlg.IV = Encoding.UTF8.GetBytes(encryptionKey.Substring(0, 16));
@@ -148,12 +196,12 @@ namespace Solar.Services.Implementation
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 
     public class ExpectedConsumerPayload
     {
-        public string ConsumerId { get; set; }   
+        public string ConsumerNo { get; set; }   
     }
 }

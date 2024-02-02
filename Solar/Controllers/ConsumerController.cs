@@ -23,7 +23,7 @@ namespace Solar.Controllers
             Console.WriteLine(consumerId);
             var payload = new
             {
-                ConsumerId = consumerId
+                consumerNo = consumerId
             };
             var data = this._consumerService.EncryptData(payload);
             return Ok(data);
@@ -34,8 +34,8 @@ namespace Solar.Controllers
         {
             string res = payload.payload;
             // Convert the base64 string to a byte array
-            byte[] base64Data = Convert.FromBase64String(res);
-            var response = this._consumerService.DecryptData(base64Data);
+            // byte[] base64Data = Convert.FromBase64String(res);
+            var response = this._consumerService.DecryptData(res);
             return Ok(response);
         }
 
