@@ -12,7 +12,7 @@ namespace Solar.Services.Implementation
     public class ConsumerService(DiscomDbContext dbContext) : IConsumerService
     {
         private readonly DiscomDbContext _dbContext = dbContext;
-        private readonly string encryptionKey = "constant_key_that_is_32_characte";
+        private readonly string encryptionKey = "hJ5sD8FpWb2cR4oA3VqG9xZtJy7uX6wK";
 
         public async Task<object> GetConsumer(string encryptedData)
         {
