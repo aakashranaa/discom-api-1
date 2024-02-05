@@ -66,13 +66,13 @@ namespace Solar.Services.Implementation
                         connection_load = discomApplicationFormData.ConnectedLoad?.ToString() ?? "",
                         consumer_name = $"{applicantData.IndividualFirstName} {applicantData.IndividualLastName}" ?? "",
                         existing_installed_capacity = discomApplicationFormData.EarlierInstalledCapacity?.ToString() ?? "",
-                        division_code = discomApplicationFormData.DivisionCode ?? "",
+                        division_code = discomApplicationFormData.DivisionCode?.Trim() ?? "",
                         circle_name = "",
                         circle_code = discomApplicationFormData.CircleCode?.ToString() ?? "",
                         consumer_address = applicantData.Address ?? "",
                         connection_type = (discomApplicationFormData.PhaseType != null && discomApplicationFormData.PhaseType.Contains("Single") ? 1 : 2).ToString() ?? "",
                         division_name = "",
-                        sub_division_code = discomApplicationFormData.SubDivisionCode?.ToString(),
+                        sub_division_code = discomApplicationFormData.SubDivisionCode?.ToString().Trim(),
                         sub_division_name = "",
                         consumer_lg_district_code = "44" // hardcoded for chandigarh
                     };
