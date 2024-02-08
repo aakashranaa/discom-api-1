@@ -13,6 +13,8 @@
         public string? SubDivisionCode { get; set; }
         public string? PhaseType { get; set; }
         public decimal? EarlierInstalledCapacity { get; set; }
-    
+
+        public int? PlantAreaID {get; set;}
+
     }
 }

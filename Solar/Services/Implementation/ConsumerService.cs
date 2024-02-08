@@ -16,6 +16,10 @@ namespace Solar.Services.Implementation
 
         public async Task<object> GetConsumer(string encryptedData)
         {
+            Console.WriteLine("heree");
+
+            var subDiv = await this._dbContext.GetAreaNameByAreaIdAsync(10);
+
             // Convert the base64 string to a byte array
             byte[] base64Data = Convert.FromBase64String(encryptedData);
             // var decryptedData = DecryptData(base64Data);
@@ -73,8 +77,8 @@ namespace Solar.Services.Implementation
                         connection_type = (discomApplicationFormData.PhaseType != null && discomApplicationFormData.PhaseType.Contains("Single") ? 1 : 2).ToString() ?? "",
                         division_name = "",
                         sub_division_code = discomApplicationFormData.SubDivisionCode?.ToString().Trim(),
-                        sub_division_name = "",
-                        consumer_lg_district_code = "44" // hardcoded for chandigarh
+                        sub_division_name = (await this._dbContext.GetAreaNameByAreaIdAsync(discomApplicationFormData.PlantAreaID ?? 0)).AreaName,
+                        consumer_lg_district_code = applicantData.DistrictId.ToString()?.Trim() // hardcoded for chandigarh
                     };
                 }
                 else
