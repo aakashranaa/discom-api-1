@@ -17,5 +17,21 @@ namespace Solar.Db.Tables
         public string? Mobile { get; set; }
         public string? IndividualLastName { get; set; }
         public string? IndividualFirstName { get; set; }
+
+        public int? DistrictId { get; set; }
     }
+
+
+    public class Area
+    {
+        public int AreaId { get; set; }
+        public int AreaName { get; set; }
+        public int MyProperty2 { get; set; }
+    }
+
+    public class AreaSection
+    {
+        public string AreaName { get; set; }
+    }
+
 }
