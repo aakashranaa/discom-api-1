@@ -48,6 +48,17 @@ namespace Solar.Services.Implementation
             return encryptedResponse;
         }
 
+        public async Task<string> GetDivisionNameFromSubDivisionNameAsync(string subDivisionName)
+        {
+            // Query the tblArea table to get the division name (AreaName) based on the sub-division name
+            var divisionName = await _dbContext.tblArea
+                .Where(a => a.AreaName == subDivisionName) // Filter by sub-division name
+                .Select(a => a.pAreaID.HasValue ? _dbContext.tblArea.FirstOrDefault(d => d.AreaID == a.pAreaID.Value).AreaName : null) // Get the division name (AreaName) based on the parentAreaId (pAreaID)
+                .FirstOrDefaultAsync();
+
+            return divisionName;
+        }
+
 
         async public Task<object> GetDiscomApplicantData(string consumerId)
         {
@@ -58,9 +69,11 @@ namespace Solar.Services.Implementation
 
                 var discomApplicationFormData = await _dbContext.tblDiscomApplicationForm.Where(x => x.ApplicantID == applicantData.ApplicantID).FirstOrDefaultAsync();
 
+
                 if (applicantData != null && discomApplicationFormData != null)
                 {
-
+                    var subDivisionName = (await this._dbContext.GetAreaNameByAreaIdAsync(discomApplicationFormData.PlantAreaID ?? 0)).AreaName.Trim();
+                    var divisionName = await this.GetDivisionNameFromSubDivisionNameAsync(subDivisionName);
                     return new Consumer200Response()
                     {
                         status_code = "200",
@@ -71,13 +84,14 @@ namespace Solar.Services.Implementation
                         consumer_name = $"{applicantData.IndividualFirstName} {applicantData.IndividualLastName}" ?? "",
                         existing_installed_capacity = discomApplicationFormData.EarlierInstalledCapacity?.ToString() ?? "",
                         division_code = discomApplicationFormData.DivisionCode?.Trim() ?? "",
-                        circle_name = "",
+                        circle_name = "Chandigarh",
                         circle_code = discomApplicationFormData.CircleCode?.ToString() ?? "",
-                        consumer_address = applicantData.Address ?? "",
+                        consumer_address = $"{(!string.IsNullOrEmpty(applicantData.HNo) ? applicantData.HNo + ", " : "")}{(!string.IsNullOrEmpty(applicantData.StreetName) ? "Street - " + applicantData.StreetName + ", " : "")}{(!string.IsNullOrEmpty(applicantData.VillageName) ? "Village - " + applicantData.VillageName + ", " : "")}{(!string.IsNullOrEmpty(applicantData.MandalName) ? "MandalName - " + applicantData.MandalName : "")}".TrimEnd(',', ' '),
+
                         connection_type = (discomApplicationFormData.PhaseType != null && discomApplicationFormData.PhaseType.Contains("Single") ? 1 : 2).ToString() ?? "",
-                        division_name = "",
+                        division_name = divisionName?.Trim() ?? "",
                         sub_division_code = discomApplicationFormData.SubDivisionCode?.ToString().Trim(),
-                        sub_division_name = (await this._dbContext.GetAreaNameByAreaIdAsync(discomApplicationFormData.PlantAreaID ?? 0)).AreaName,
+                        sub_division_name = subDivisionName.Trim() ?? "",
                         consumer_lg_district_code = applicantData.DistrictId.ToString()?.Trim() // hardcoded for chandigarh
                     };
                 }
