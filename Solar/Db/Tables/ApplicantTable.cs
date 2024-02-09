@@ -14,6 +14,11 @@ namespace Solar.Db.Tables
         [Column("ConsumerNo")]
         public string? ConsumerNo { get; set; }
         public string? Address { get; set; }
+
+        public string? HNo { get; set; }
+        public string? StreetName { get; set; }
+        public string? VillageName { get; set; }
+        public string? MandalName { get; set; }
         public string? Mobile { get; set; }
         public string? IndividualLastName { get; set; }
         public string? IndividualFirstName { get; set; }
@@ -24,9 +29,11 @@ namespace Solar.Db.Tables
 
     public class Area
     {
-        public int AreaId { get; set; }
-        public int AreaName { get; set; }
-        public int MyProperty2 { get; set; }
+        public int? AreaID { get; set; }
+        public string? AreaName { get; set; }
+        public int? DistrictID { get; set; }
+        public int? pAreaID { get; set; }
+        public int? newOfficeTypeID { get; set; }
     }
 
     public class AreaSection
