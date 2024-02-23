@@ -23,7 +23,7 @@
 
     public class ConsumerOtherResponse
     {
-        public string status { get; set; }
+        public string status_code { get; set; }
         public string message { get; set; }
         public string consumerNo { get; set; }
     }
