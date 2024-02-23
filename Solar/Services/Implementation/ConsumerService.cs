@@ -33,7 +33,7 @@ namespace Solar.Services.Implementation
             {
                 return new ConsumerOtherResponse
                 {
-                    status = "600",
+                    status_code = "600",
                     message = "Invalid Key",
                     consumerNo = consumerId
                 };
@@ -99,7 +99,7 @@ namespace Solar.Services.Implementation
                 {
                     return new ConsumerOtherResponse
                     {
-                        status = "300",
+                        status_code = "300",
                         message = "Data not available",
                         consumerNo = consumerId
                     };
@@ -109,7 +109,7 @@ namespace Solar.Services.Implementation
             {
                 return new ConsumerOtherResponse
                 {
-                    status = "800",
+                    status_code = "800",
                     message = "Server Unavailable",
                     consumerNo = consumerId
                 };
