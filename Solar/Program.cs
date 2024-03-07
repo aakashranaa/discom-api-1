@@ -26,11 +26,11 @@ catch (Exception ex)
     Console.WriteLine($"Database connection failed: {ex.Message}");
 }*/
 
-builder.Services.AddDbContext<DiscomDbContext>(options =>
+/*builder.Services.AddDbContext<DiscomDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
-
+*/
 
 builder.Services.AddScoped<IConsumerService, ConsumerService>();
 

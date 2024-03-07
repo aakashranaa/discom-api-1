@@ -1,4 +1,4 @@
-﻿// SolarApplicationDbContext.cs
+﻿/*// SolarApplicationDbContext.cs
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Solar.Db.Tables;
@@ -38,3 +38,4 @@ public class DiscomDbContext : DbContext
 
 
 }
+*/
