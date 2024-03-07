@@ -28,6 +28,7 @@ namespace Solar.Controllers
             var data = this._consumerService.EncryptData(payload);
             return Ok(data);
         }
+        
 
         [HttpPost("decrypt")]
         public IActionResult GetDecryptedData([FromBody] Payload payload)
