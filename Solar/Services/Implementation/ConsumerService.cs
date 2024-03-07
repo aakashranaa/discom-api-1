@@ -9,9 +9,9 @@ using Solar.Controllers;
 
 namespace Solar.Services.Implementation
 {
-    public class ConsumerService(DiscomDbContext dbContext) : IConsumerService
+    public class ConsumerService(/*DiscomDbContext dbContext*/) : IConsumerService
     {
-        private readonly DiscomDbContext _dbContext = dbContext;
+        /*private readonly DiscomDbContext _dbContext = dbContext;*/
         private readonly string encryptionKey = "hJ5sD8FpWb2cR4oA3VqG9xZtJy7uX6wK";
 
 
@@ -96,7 +96,7 @@ namespace Solar.Services.Implementation
         }
     
 
-        public async Task<string> GetDivisionNameFromSubDivisionNameAsync(string subDivisionName)
+        /*public async Task<string> GetDivisionNameFromSubDivisionNameAsync(string subDivisionName)
         {
             // Query the tblArea table to get the division name (AreaName) based on the sub-division name
             var divisionName = await _dbContext.tblArea
@@ -105,10 +105,10 @@ namespace Solar.Services.Implementation
                 .FirstOrDefaultAsync();
 
             return divisionName;
-        }
+        }*/
 
 
-        async public Task<object> GetDiscomApplicantData(string consumerId)
+        /*async public Task<object> GetDiscomApplicantData(string consumerId)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace Solar.Services.Implementation
             }
 
         }
-
+*/
         public string EncryptAESCBC(string text)
         {
             string Key = encryptionKey;
