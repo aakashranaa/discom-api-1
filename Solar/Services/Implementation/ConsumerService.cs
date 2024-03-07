@@ -14,11 +14,13 @@ namespace Solar.Services.Implementation
         private readonly DiscomDbContext _dbContext = dbContext;
         private readonly string encryptionKey = "hJ5sD8FpWb2cR4oA3VqG9xZtJy7uX6wK";
 
+
+
         public async Task<object> GetConsumer(string encryptedData)
         {
-            Console.WriteLine("heree");
-
-            var subDiv = await this._dbContext.GetAreaNameByAreaIdAsync(10);
+            var excelReader = new ExcelReader();
+            List<Record> _records = excelReader.ReadExcel("ut-crest-rep.xlsx");
+            // var subDiv = await this._dbContext.GetAreaNameByAreaIdAsync(10);
 
             // Convert the base64 string to a byte array
             byte[] base64Data = Convert.FromBase64String(encryptedData);
@@ -39,14 +41,60 @@ namespace Solar.Services.Implementation
                 };
             }
 
-            var response = await GetDiscomApplicantData(consumerId);
+            // var response = await GetDiscomApplicantData(consumerId);
+            try
+            {
+                var response = _records.FirstOrDefault(r => r.consumer_id == consumerId);
+                if (response != null)
+                {
+                    var consumerResponse = new Consumer200Response
+                    {
+                        status_code = response.status_code,
+                        consumer_address = response.consumer_address,
+                        consumer_lg_district_code = response.consumer_lg_district_code,
+                        consumer_pin_code = response.consumer_pin_code,
+                        connection_load = response.connection_load,
+                        circle_name = response.circle_name,
+                        circle_code = response.circle_code,
+                        division_name = response.division_name,
+                        division_code = response.division_code,
+                        sub_division_name = response.sub_division_name,
+                        sub_division_code = response.sub_division_code,
+                        connection_type = response.connection_type,
+                        consumer_mobile = response.consumer_mobile,
+                        consumer_email = response.consumer_email,
+                        consumer_name = response.consumer_name,
+                        existing_installed_capacity = response.existing_installed_capacity
+                    };
 
-            var responseInString = JsonConvert.SerializeObject(response);
+                    var responseInString = JsonConvert.SerializeObject(consumerResponse);
+                    var encryptedResponse = EncryptAESCBC(responseInString);
 
-            var encryptedResponse = EncryptAESCBC(responseInString);
+                    return encryptedResponse;
+                }
 
-            return encryptedResponse;
+                else
+                {
+                    return new ConsumerOtherResponse
+                    {
+                        status_code = "300",
+                        message = "Data not available",
+                        consumerNo = consumerId
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ConsumerOtherResponse
+                {
+                    status_code = "800",
+                    message = "Server Unavailable",
+                    consumerNo = consumerId
+                };
+            }
+
         }
+    
 
         public async Task<string> GetDivisionNameFromSubDivisionNameAsync(string subDivisionName)
         {
